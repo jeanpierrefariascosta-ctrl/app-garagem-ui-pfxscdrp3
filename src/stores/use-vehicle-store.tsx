@@ -1,35 +1,52 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react'
-
-export type Vehicle = {
-  brand: string
-  model: string
-  year: string
-  km: string
-}
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import type { RecordModel } from 'pocketbase'
+import pb from '@/lib/pocketbase/client'
+import { getMyVehicles } from '@/services/vehicles'
 
 interface VehicleStore {
-  vehicle: Vehicle | null
-  setVehicle: (vehicle: Vehicle | null) => void
+  vehicle: RecordModel | null
+  setVehicle: (vehicle: RecordModel | null) => void
   isLoading: boolean
-  setIsLoading: (loading: boolean) => void
+  refreshVehicles: () => Promise<void>
 }
 
 const VehicleContext = createContext<VehicleStore | undefined>(undefined)
 
 export function VehicleProvider({ children }: { children: ReactNode }) {
-  const [vehicle, setVehicle] = useState<Vehicle | null>(null)
+  const [vehicle, setVehicle] = useState<RecordModel | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Simulate initial load from a remote server or local storage
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  const refreshVehicles = async () => {
+    setIsLoading(true)
+    try {
+      if (pb.authStore.isValid) {
+        const vehicles = await getMyVehicles()
+        if (vehicles.length > 0) {
+          setVehicle(vehicles[0])
+        } else {
+          setVehicle(null)
+        }
+      } else {
+        setVehicle(null)
+      }
+    } catch (error) {
+      console.error('Failed to load vehicles', error)
+    } finally {
       setIsLoading(false)
-    }, 1000)
-    return () => clearTimeout(timer)
+    }
+  }
+
+  useEffect(() => {
+    refreshVehicles()
+
+    // Listen to auth changes to reload or clear vehicles
+    return pb.authStore.onChange(() => {
+      refreshVehicles()
+    })
   }, [])
 
   return (
-    <VehicleContext.Provider value={{ vehicle, setVehicle, isLoading, setIsLoading }}>
+    <VehicleContext.Provider value={{ vehicle, setVehicle, isLoading, refreshVehicles }}>
       {children}
     </VehicleContext.Provider>
   )

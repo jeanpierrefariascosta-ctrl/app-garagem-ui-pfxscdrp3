@@ -1,16 +1,16 @@
 import { Car, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { type Vehicle } from '@/stores/use-vehicle-store'
+import type { RecordModel } from 'pocketbase'
 
 interface VehicleInfoProps {
-  vehicle: Vehicle
+  vehicle: RecordModel
   onChangeVehicle: () => void
 }
 
 export function VehicleInfo({ vehicle, onChangeVehicle }: VehicleInfoProps) {
   // Format KM with dots (e.g., 42000 -> 42.000)
-  const formattedKm = Number(vehicle.km).toLocaleString('pt-BR')
+  const formattedKm = Number(vehicle.km_current || 0).toLocaleString('pt-BR')
 
   return (
     <Card className="border-none shadow-soft overflow-hidden animate-fade-in-up">
@@ -35,7 +35,9 @@ export function VehicleInfo({ vehicle, onChangeVehicle }: VehicleInfoProps) {
             <h2 className="text-2xl font-bold text-foreground">
               {vehicle.brand} {vehicle.model}
             </h2>
-            <p className="text-muted-foreground text-sm mt-1">Ano {vehicle.year}</p>
+            <p className="text-muted-foreground text-sm mt-1">
+              Ano {vehicle.year} {vehicle.plate && `• ${vehicle.plate.toUpperCase()}`}
+            </p>
           </div>
           <div className="text-right">
             <p className="text-xs text-muted-foreground uppercase font-semibold tracking-wider mb-1">

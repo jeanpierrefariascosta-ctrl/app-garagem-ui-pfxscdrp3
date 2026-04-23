@@ -20,6 +20,10 @@ import {
 } from '@/components/ui/select'
 import { useToast } from '@/hooks/use-toast'
 import useVehicleStore from '@/stores/use-vehicle-store'
+import pb from '@/lib/pocketbase/client'
+import { createVehicle } from '@/services/vehicles'
+import { initVehicleMaintenance } from '@/services/maintenance'
+import { Loader2 } from 'lucide-react'
 
 const CAR_DATA: Record<string, string[]> = {
   Chevrolet: ['Onix', 'Tracker', 'Montana', 'Cruze'],
@@ -41,20 +45,19 @@ interface Props {
 }
 
 export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
-  const { setVehicle } = useVehicleStore()
+  const { refreshVehicles } = useVehicleStore()
   const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState(false)
 
   const [brand, setBrand] = useState('')
   const [model, setModel] = useState('')
   const [year, setYear] = useState('')
   const [km, setKm] = useState('')
 
-  // Reset model when brand changes
   useEffect(() => {
     setModel('')
   }, [brand])
 
-  // Reset form on open
   useEffect(() => {
     if (open) {
       setBrand('')
@@ -64,20 +67,43 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
     }
   }, [open])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!brand || !model || !year || !km) return
+    if (!brand || !model || !year || !km || !pb.authStore.record?.id) return
 
-    setVehicle({ brand, model, year, km })
-    toast({
-      title: 'Veículo cadastrado!',
-      description: `${brand} ${model} adicionado com sucesso à sua garagem.`,
-      className: 'bg-success text-success-foreground border-success',
-    })
-    onOpenChange(false)
+    setIsLoading(true)
+    try {
+      const newVehicle = await createVehicle({
+        brand,
+        model,
+        year: parseInt(year),
+        km_current: parseInt(km),
+        user: pb.authStore.record.id,
+      })
+
+      // Initialize basic plans for this vehicle
+      await initVehicleMaintenance(newVehicle.id, model)
+
+      await refreshVehicles()
+
+      toast({
+        title: 'Veículo cadastrado!',
+        description: `${brand} ${model} adicionado com sucesso à sua garagem.`,
+        className: 'bg-success text-success-foreground border-success',
+      })
+      onOpenChange(false)
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao cadastrar',
+        description: 'Verifique os dados e tente novamente.',
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const isFormValid = brand && model && year && km
+  const isFormValid = brand && model && year && km && !isLoading
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -171,10 +197,15 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
               disabled={!isFormValid}
               className="w-full h-14 rounded-xl font-bold text-base transition-transform active:scale-[0.98]"
             >
+              {isLoading && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
               Confirmar Cadastro
             </Button>
             <DrawerClose asChild>
-              <Button variant="ghost" className="w-full h-12 rounded-xl text-muted-foreground">
+              <Button
+                variant="ghost"
+                className="w-full h-12 rounded-xl text-muted-foreground"
+                disabled={isLoading}
+              >
                 Cancelar
               </Button>
             </DrawerClose>

@@ -9,25 +9,37 @@ import Alerts from './pages/Alerts'
 import Schedules from './pages/Schedules'
 import Profile from './pages/Profile'
 import NotFound from './pages/NotFound'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
+import { ProtectedRoute } from './components/ProtectedRoute'
 import { VehicleProvider } from './stores/use-vehicle-store'
+import { AuthProvider } from './hooks/use-auth'
 
 const App = () => (
   <BrowserRouter future={{ v7_startTransition: false, v7_relativeSplatPath: false }}>
-    <TooltipProvider>
-      <VehicleProvider>
-        <Toaster />
-        <Sonner />
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/alertas" element={<Alerts />} />
-            <Route path="/agendamentos" element={<Schedules />} />
-            <Route path="/perfil" element={<Profile />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </VehicleProvider>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <VehicleProvider>
+          <Toaster />
+          <Sonner />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/cadastro" element={<Signup />} />
+
+            <Route element={<ProtectedRoute />}>
+              <Route element={<Layout />}>
+                <Route path="/" element={<Index />} />
+                <Route path="/alertas" element={<Alerts />} />
+                <Route path="/agendamentos" element={<Schedules />} />
+                <Route path="/perfil" element={<Profile />} />
+              </Route>
+            </Route>
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </VehicleProvider>
+      </TooltipProvider>
+    </AuthProvider>
   </BrowserRouter>
 )
 
