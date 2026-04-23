@@ -1,58 +1,49 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
-import type { RecordModel } from 'pocketbase'
-import pb from '@/lib/pocketbase/client'
-import { getMyVehicles } from '@/services/vehicles'
+import { createContext, useContext, useState, ReactNode } from 'react'
 
-interface VehicleStore {
-  vehicle: RecordModel | null
-  setVehicle: (vehicle: RecordModel | null) => void
-  isLoading: boolean
-  refreshVehicles: () => Promise<void>
+export interface Vehicle {
+  id: string
+  brand: string
+  model: string
+  year: number
+  license_plate?: string
 }
 
-const VehicleContext = createContext<VehicleStore | undefined>(undefined)
+interface VehicleStoreType {
+  activeVehicle: Vehicle | null
+  setActiveVehicle: (vehicle: Vehicle | null) => void
+  vehicles: Vehicle[]
+  setVehicles: (vehicles: Vehicle[]) => void
+}
+
+const VehicleContext = createContext<VehicleStoreType | undefined>(undefined)
 
 export function VehicleProvider({ children }: { children: ReactNode }) {
-  const [vehicle, setVehicle] = useState<RecordModel | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-
-  const refreshVehicles = async () => {
-    setIsLoading(true)
-    try {
-      if (pb.authStore.isValid) {
-        const vehicles = await getMyVehicles()
-        if (vehicles.length > 0) {
-          setVehicle(vehicles[0])
-        } else {
-          setVehicle(null)
-        }
-      } else {
-        setVehicle(null)
-      }
-    } catch (error) {
-      console.error('Failed to load vehicles', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    refreshVehicles()
-
-    // Listen to auth changes to reload or clear vehicles
-    return pb.authStore.onChange(() => {
-      refreshVehicles()
-    })
-  }, [])
+  // Initialize with a mock vehicle so the user can see the app working
+  const [activeVehicle, setActiveVehicle] = useState<Vehicle | null>({
+    id: 'mock-vehicle-1',
+    brand: 'Toyota',
+    model: 'Corolla',
+    year: 2022,
+    license_plate: 'ABC-1234',
+  })
+  const [vehicles, setVehicles] = useState<Vehicle[]>([
+    {
+      id: 'mock-vehicle-1',
+      brand: 'Toyota',
+      model: 'Corolla',
+      year: 2022,
+      license_plate: 'ABC-1234',
+    },
+  ])
 
   return (
-    <VehicleContext.Provider value={{ vehicle, setVehicle, isLoading, refreshVehicles }}>
+    <VehicleContext.Provider value={{ activeVehicle, setActiveVehicle, vehicles, setVehicles }}>
       {children}
     </VehicleContext.Provider>
   )
 }
 
-export default function useVehicleStore() {
+export function useVehicleStore() {
   const context = useContext(VehicleContext)
   if (context === undefined) {
     throw new Error('useVehicleStore must be used within a VehicleProvider')
