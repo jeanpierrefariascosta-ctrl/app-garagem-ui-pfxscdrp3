@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-23T02:23:36.143Z",
+  "generatedAt": "2026-04-23T02:32:39.202Z",
   "collections": [
     {
       "name": "users",
@@ -271,6 +271,151 @@
         }
       ],
       "indexes": ["CREATE INDEX idx_vms_vehicle ON vehicle_maintenance_status (vehicle)"]
+    },
+    {
+      "name": "quotes",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != '' && user = @request.auth.id",
+        "view": "@request.auth.id != '' && user = @request.auth.id",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != '' && user = @request.auth.id",
+        "delete": "@request.auth.id != '' && user = @request.auth.id"
+      },
+      "fields": [
+        {
+          "name": "user",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "users"
+        },
+        {
+          "name": "vehicle",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "vehicles"
+        },
+        {
+          "name": "items_requested",
+          "type": "json",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "status",
+          "type": "select",
+          "required": false,
+          "system": false,
+          "selectValues": ["open", "in_progress", "completed", "expired"]
+        },
+        {
+          "name": "expires_at",
+          "type": "date",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "lat",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "lng",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "name": "proposals",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != '' && quote.user = @request.auth.id",
+        "view": "@request.auth.id != '' && quote.user = @request.auth.id",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != ''",
+        "delete": "@request.auth.id != ''"
+      },
+      "fields": [
+        {
+          "name": "quote",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "quotes"
+        },
+        {
+          "name": "workshop_name",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "total_value",
+          "type": "number",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "estimated_hours",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "items_included",
+          "type": "json",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "status",
+          "type": "select",
+          "required": false,
+          "system": false,
+          "selectValues": ["pending", "accepted", "rejected"]
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": []
     }
   ]
 }

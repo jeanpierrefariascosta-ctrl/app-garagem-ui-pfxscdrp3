@@ -6,11 +6,14 @@ export function ActionButtons() {
   return (
     <div className="flex flex-col gap-3 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
       <Button
+        asChild
         size="lg"
         className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-bold h-14 rounded-xl text-base shadow-lg shadow-accent/20 transition-transform active:scale-[0.98]"
       >
-        <Wrench className="w-5 h-5 mr-2" />
-        Solicitar Cotação
+        <Link to="/cotacao">
+          <Wrench className="w-5 h-5 mr-2" />
+          Solicitar Cotação
+        </Link>
       </Button>
       <Button
         asChild
