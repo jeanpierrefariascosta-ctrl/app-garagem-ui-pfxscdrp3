@@ -6,6 +6,14 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription as DrawerDesc,
+} from '@/components/ui/drawer'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -25,6 +33,7 @@ interface Props {
 }
 
 export function ProposalModal({ quote, workshopId, workshopName, open, onOpenChange }: Props) {
+  const isMobile = useIsMobile()
   const [history, setHistory] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [totalValue, setTotalValue] = useState('')
@@ -83,18 +92,10 @@ export function ProposalModal({ quote, workshopId, workshopName, open, onOpenCha
 
   if (!quote) return null
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto p-4 md:p-6">
-        <DialogHeader>
-          <DialogTitle>Enviar Proposta</DialogTitle>
-          <DialogDescription>
-            Veículo: {quote.expand?.vehicle?.brand} {quote.expand?.vehicle?.model} (
-            {quote.expand?.vehicle?.year})
-          </DialogDescription>
-        </DialogHeader>
+  const vehicleInfo = `Veículo: ${quote.expand?.vehicle?.brand} ${quote.expand?.vehicle?.model} (${quote.expand?.vehicle?.year})`
 
-        <div className="space-y-6 py-2">
+  const Content = (
+    <div className="space-y-6 py-2 px-4 md:px-0">
           {history.length > 0 && (
             <div className="space-y-2">
               <h4 className="text-sm font-medium flex items-center gap-2">
@@ -171,14 +172,40 @@ export function ProposalModal({ quote, workshopId, workshopName, open, onOpenCha
           </form>
         </div>
 
-        <div className="flex justify-end gap-2 pt-2 border-t">
-          <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+        <div className="flex flex-col md:flex-row justify-end gap-3 pt-4 border-t px-4 md:px-0 pb-4 md:pb-0">
+          <Button type="button" variant="ghost" className="order-2" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button type="submit" form="proposal-form" disabled={loading}>
+          <Button type="submit" form="proposal-form" disabled={loading} className="order-1 md:order-2">
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Enviar Proposta
           </Button>
         </div>
+  )
+
+  if (isMobile) {
+    return (
+      <Drawer open={open} onOpenChange={onOpenChange}>
+        <DrawerContent className="max-h-[90vh]">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Enviar Proposta</DrawerTitle>
+            <DrawerDesc>{vehicleInfo}</DrawerDesc>
+          </DrawerHeader>
+          <div className="overflow-y-auto">
+            {Content}
+          </div>
+        </DrawerContent>
+      </Drawer>
+    )
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto p-6 rounded-2xl">
+        <DialogHeader>
+          <DialogTitle>Enviar Proposta</DialogTitle>
+          <DialogDescription>{vehicleInfo}</DialogDescription>
+        </DialogHeader>
+        {Content}
       </DialogContent>
     </Dialog>
   )

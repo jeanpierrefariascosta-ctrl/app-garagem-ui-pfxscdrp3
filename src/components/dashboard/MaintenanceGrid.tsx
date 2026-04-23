@@ -79,7 +79,7 @@ export function MaintenanceGrid() {
         </span>
       </div>
 
-      <div className="grid gap-3">
+      <div className="grid gap-3 md:grid-cols-2">
         {statuses.map((item) => {
           const plan = item.expand?.plan_item
           const itemName = plan?.item_name || 'Desconhecido'

@@ -78,7 +78,7 @@ export default function Alerts() {
     }
 
     return (
-      <div className="space-y-4 mt-4 max-w-2xl mx-auto w-full">
+      <div className="mt-4 grid md:grid-cols-2 gap-4 w-full">
         {filtered.map((notif) => (
           <Card
             key={notif.id}
@@ -181,7 +181,7 @@ export default function Alerts() {
         </div>
 
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="w-full grid grid-cols-3 h-11 bg-muted/50 rounded-xl p-1">
+          <TabsList className="w-full md:w-[400px] grid grid-cols-3 h-11 bg-muted/50 rounded-xl p-1">
             <TabsTrigger value="all" className="rounded-lg text-xs font-semibold">
               Todos
             </TabsTrigger>
@@ -193,7 +193,7 @@ export default function Alerts() {
             </TabsTrigger>
           </TabsList>
 
-          <div className="min-h-[400px] relative">
+          <div className="min-h-[400px] relative mt-4">
             <TabsContent value="all" className="animate-fade-in-up mt-0 absolute w-full top-0">
               {renderAlerts(['none', 'action_taken', 'ignored'])}
             </TabsContent>

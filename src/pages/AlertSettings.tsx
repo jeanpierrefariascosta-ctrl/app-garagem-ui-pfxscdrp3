@@ -94,23 +94,23 @@ export default function AlertSettings() {
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
         ) : (
-          <div className="space-y-6 max-w-xl mx-auto w-full">
-            <Card className="p-5 space-y-6 shadow-soft border-none rounded-xl">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1 pr-4">
-                  <Label className="text-base font-semibold">Ativar notificações push</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Receba alertas sobre a manutenção do seu veículo.
-                  </p>
+          <div className="space-y-6 w-full">
+            <div className="grid md:grid-cols-2 gap-6 items-start">
+              <Card className="p-5 space-y-6 shadow-soft border-none rounded-xl">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1 pr-4">
+                    <Label className="text-base font-semibold">Ativar notificações push</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Receba alertas sobre a manutenção do seu veículo.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.enabled}
+                    onCheckedChange={(c) => setSettings((s) => ({ ...s, enabled: c }))}
+                  />
                 </div>
-                <Switch
-                  checked={settings.enabled}
-                  onCheckedChange={(c) => setSettings((s) => ({ ...s, enabled: c }))}
-                />
-              </div>
 
-              {settings.enabled && (
-                <>
+                {settings.enabled && (
                   <div className="space-y-3 pt-4 border-t border-border">
                     <Label className="text-base font-semibold">Antecedência padrão</Label>
                     <p className="text-sm text-muted-foreground">
@@ -132,38 +132,45 @@ export default function AlertSettings() {
                       </SelectContent>
                     </Select>
                   </div>
+                )}
+              </Card>
 
-                  <div className="space-y-4 pt-4 border-t border-border">
-                    <Label className="text-base font-semibold">Preferências por Item</Label>
-                    <div className="space-y-4">
-                      {defaultItems.map((item) => (
-                        <div key={item} className="flex items-center justify-between">
-                          <Label
-                            className="text-sm font-medium leading-none cursor-pointer"
-                            onClick={() => toggleItem(item)}
-                          >
-                            {item}
-                          </Label>
-                          <Switch
-                            checked={settings.item_preferences?.[item] ?? false}
-                            onCheckedChange={() => toggleItem(item)}
-                          />
-                        </div>
-                      ))}
-                    </div>
+              {settings.enabled && (
+                <Card className="p-5 space-y-4 shadow-soft border-none rounded-xl">
+                  <Label className="text-base font-semibold">Preferências por Item</Label>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Selecione quais itens deseja monitorar.
+                  </p>
+                  <div className="space-y-4">
+                    {defaultItems.map((item) => (
+                      <div key={item} className="flex items-center justify-between">
+                        <Label
+                          className="text-sm font-medium leading-none cursor-pointer"
+                          onClick={() => toggleItem(item)}
+                        >
+                          {item}
+                        </Label>
+                        <Switch
+                          checked={settings.item_preferences?.[item] ?? false}
+                          onCheckedChange={() => toggleItem(item)}
+                        />
+                      </div>
+                    ))}
                   </div>
-                </>
+                </Card>
               )}
-            </Card>
+            </div>
 
-            <Button
-              className="w-full h-12 text-lg rounded-xl shadow-soft"
-              onClick={handleSave}
-              disabled={saving}
-            >
-              {saving ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
-              Salvar Configurações
-            </Button>
+            <div className="flex justify-end md:mt-4">
+              <Button
+                className="w-full md:w-auto md:min-w-[200px] h-12 text-lg rounded-xl shadow-soft"
+                onClick={handleSave}
+                disabled={saving}
+              >
+                {saving ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                Salvar Configurações
+              </Button>
+            </div>
           </div>
         )}
       </div>

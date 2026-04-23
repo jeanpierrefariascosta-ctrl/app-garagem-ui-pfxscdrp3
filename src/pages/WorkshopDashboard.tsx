@@ -114,7 +114,7 @@ export default function WorkshopDashboard() {
   )
 
   return (
-    <div className="min-h-screen bg-muted/30 flex flex-col animate-fade-in">
+    <div className="min-h-screen bg-muted/30 flex flex-col animate-fade-in md:pl-20">
       <header className="bg-background border-b px-6 py-4 flex justify-between items-center sticky top-0 z-10 shadow-soft">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold shadow-sm">
@@ -127,17 +127,46 @@ export default function WorkshopDashboard() {
             <p className="text-xs text-muted-foreground">Painel Kanban de Cotações</p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={signOut}
-          className="hover:bg-destructive/10 hover:text-destructive transition-colors"
-        >
-          <LogOut className="w-5 h-5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={signOut}
+            className="hover:bg-destructive/10 hover:text-destructive transition-colors hidden md:flex"
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Sair
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={signOut}
+            className="hover:bg-destructive/10 hover:text-destructive transition-colors md:hidden"
+          >
+            <LogOut className="w-5 h-5" />
+          </Button>
+        </div>
       </header>
 
-      <main className="flex-1 p-4 md:p-6 overflow-x-auto">
+      {/* Very simple fixed minimal sidebar just for workshop if needed, but the header handles logout. */}
+      <aside className="hidden md:flex flex-col w-20 fixed inset-y-0 left-0 bg-background border-r z-50 items-center py-6 shadow-soft">
+        <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-sm text-primary-foreground font-bold text-xl">
+          G
+        </div>
+        <div className="mt-auto">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={signOut}
+            className="hover:bg-destructive/10 hover:text-destructive rounded-xl w-12 h-12"
+            title="Sair"
+          >
+            <LogOut className="w-5 h-5" />
+          </Button>
+        </div>
+      </aside>
+
+      <main className="flex-1 p-4 md:p-8 overflow-x-auto">
         {error ? (
           <div className="flex flex-col items-center justify-center h-full gap-4 text-muted-foreground">
             <p>Ocorreu um erro ao carregar os dados.</p>

@@ -21,15 +21,24 @@ export default function Index() {
       <Header />
 
       {/* Content pulled up slightly over the header background */}
-      <div className="p-5 space-y-7 -mt-4 relative z-10">
+      <div className="p-5 md:p-8 space-y-7 -mt-4 md:mt-0 relative z-10">
         {!vehicle ? (
           <EmptyState onRegister={() => setIsDrawerOpen(true)} />
         ) : (
-          <>
-            <VehicleInfo vehicle={vehicle} onChangeVehicle={() => setIsDrawerOpen(true)} />
-            <MaintenanceGrid />
-            <ActionButtons />
-          </>
+          <div className="grid md:grid-cols-12 gap-6 items-start">
+            <div className="md:col-span-4 space-y-6">
+              <VehicleInfo vehicle={vehicle} onChangeVehicle={() => setIsDrawerOpen(true)} />
+              <div className="hidden md:block">
+                <ActionButtons />
+              </div>
+            </div>
+            <div className="md:col-span-8">
+              <MaintenanceGrid />
+            </div>
+            <div className="md:hidden">
+              <ActionButtons />
+            </div>
+          </div>
         )}
       </div>
 

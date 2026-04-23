@@ -12,6 +12,7 @@ import AlertSettings from './pages/AlertSettings'
 import MaintenancePlan from './pages/MaintenancePlan'
 import QuoteRequest from './pages/QuoteRequest'
 import QuoteDashboard from './pages/QuoteDashboard'
+import Roadmap from './pages/Roadmap'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -44,6 +45,7 @@ const App = () => (
                 <Route path="/plano" element={<MaintenancePlan />} />
                 <Route path="/cotacao" element={<QuoteRequest />} />
                 <Route path="/cotacao/:id" element={<QuoteDashboard />} />
+                <Route path="/roadmap" element={<Roadmap />} />
               </Route>
             </Route>
 

@@ -1,4 +1,4 @@
-import { Home, Bell, Calendar, User } from 'lucide-react'
+import { Home, Bell, Calendar, User, Map } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
@@ -32,11 +32,12 @@ export function BottomNav() {
     { icon: Home, label: 'Home', path: '/' },
     { icon: Bell, label: 'Alertas', path: '/alertas' },
     { icon: Calendar, label: 'Agendamentos', path: '/agendamentos' },
+    { icon: Map, label: 'Roadmap', path: '/roadmap' },
     { icon: User, label: 'Perfil', path: '/perfil' },
   ]
 
   return (
-    <nav className="absolute bottom-0 w-full bg-card border-t flex justify-around py-3 px-2 z-20 pb-safe shadow-[0_-2px_10px_rgba(0,0,0,0.03)]">
+    <nav className="md:hidden absolute bottom-0 w-full bg-card border-t flex justify-around py-3 px-2 z-20 pb-safe shadow-[0_-2px_10px_rgba(0,0,0,0.03)]">
       {navItems.map((item) => {
         const isActive = location.pathname === item.path
         return (

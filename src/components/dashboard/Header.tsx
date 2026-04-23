@@ -13,7 +13,7 @@ export function Header() {
     : `https://img.usecurling.com/ppl/thumbnail?gender=female&seed=${user?.id || 1}`
 
   return (
-    <header className="px-5 py-6 flex items-center justify-between bg-primary text-primary-foreground rounded-b-3xl shadow-sm">
+    <header className="px-5 md:px-8 py-6 flex items-center justify-between bg-primary text-primary-foreground rounded-b-3xl md:rounded-t-[2rem] md:rounded-b-none shadow-sm">
       <div className="flex items-center gap-4">
         <Avatar className="h-12 w-12 border-2 border-primary-foreground/20 ring-2 ring-transparent transition-all hover:ring-primary-foreground/40">
           <AvatarImage src={avatarUrl} alt={user?.name || ''} />
