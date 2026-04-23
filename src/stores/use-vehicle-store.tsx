@@ -63,10 +63,12 @@ export function VehicleProvider({ children }: { children: ReactNode }) {
   )
 }
 
-export default function useVehicleStore() {
+export function useVehicleStore() {
   const context = useContext(VehicleContext)
   if (context === undefined) {
     throw new Error('useVehicleStore must be used within a VehicleProvider')
   }
   return context
 }
+
+export default useVehicleStore
