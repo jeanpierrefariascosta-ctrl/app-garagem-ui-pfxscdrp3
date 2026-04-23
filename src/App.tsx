@@ -8,6 +8,7 @@ import Index from './pages/Index'
 import Alerts from './pages/Alerts'
 import Schedules from './pages/Schedules'
 import Profile from './pages/Profile'
+import AlertSettings from './pages/AlertSettings'
 import MaintenancePlan from './pages/MaintenancePlan'
 import QuoteRequest from './pages/QuoteRequest'
 import QuoteDashboard from './pages/QuoteDashboard'
@@ -19,10 +20,12 @@ import { WorkshopRoute } from './components/WorkshopRoute'
 import WorkshopDashboard from './pages/WorkshopDashboard'
 import { VehicleProvider } from './stores/use-vehicle-store'
 import { AuthProvider } from './hooks/use-auth'
+import { GlobalAlerts } from './components/GlobalAlerts'
 
 const App = () => (
   <BrowserRouter future={{ v7_startTransition: false, v7_relativeSplatPath: false }}>
     <AuthProvider>
+      <GlobalAlerts />
       <TooltipProvider>
         <VehicleProvider>
           <Toaster />
@@ -37,6 +40,7 @@ const App = () => (
                 <Route path="/alertas" element={<Alerts />} />
                 <Route path="/agendamentos" element={<Schedules />} />
                 <Route path="/perfil" element={<Profile />} />
+                <Route path="/perfil/alertas" element={<AlertSettings />} />
                 <Route path="/plano" element={<MaintenancePlan />} />
                 <Route path="/cotacao" element={<QuoteRequest />} />
                 <Route path="/cotacao/:id" element={<QuoteDashboard />} />

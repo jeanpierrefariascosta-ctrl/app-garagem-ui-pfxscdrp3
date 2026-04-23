@@ -1,12 +1,18 @@
-import { User, Settings, Shield, LogOut, ChevronRight } from 'lucide-react'
+import { User, Settings, Shield, LogOut, ChevronRight, Bell } from 'lucide-react'
 import { Header } from '@/components/dashboard/Header'
 import { Card } from '@/components/ui/card'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function Profile() {
+  const navigate = useNavigate()
+  const { signOut } = useAuth()
+
   const menuItems = [
-    { icon: User, label: 'Meus Dados' },
-    { icon: Shield, label: 'Privacidade e Segurança' },
-    { icon: Settings, label: 'Configurações' },
+    { icon: User, label: 'Meus Dados', onClick: () => {} },
+    { icon: Bell, label: 'Configurações de Alertas', onClick: () => navigate('/perfil/alertas') },
+    { icon: Shield, label: 'Privacidade e Segurança', onClick: () => {} },
+    { icon: Settings, label: 'Configurações', onClick: () => {} },
   ]
 
   return (
@@ -19,6 +25,7 @@ export default function Profile() {
           {menuItems.map((item, i) => (
             <Card
               key={i}
+              onClick={item.onClick}
               className="flex items-center justify-between p-4 border-none shadow-soft hover:bg-muted/30 transition-colors cursor-pointer rounded-xl"
             >
               <div className="flex items-center gap-4">
@@ -31,7 +38,10 @@ export default function Profile() {
             </Card>
           ))}
 
-          <Card className="flex items-center justify-between p-4 border-none shadow-soft hover:bg-destructive/5 transition-colors cursor-pointer rounded-xl mt-6">
+          <Card
+            onClick={signOut}
+            className="flex items-center justify-between p-4 border-none shadow-soft hover:bg-destructive/5 transition-colors cursor-pointer rounded-xl mt-6"
+          >
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-full bg-destructive/10 text-destructive flex items-center justify-center">
                 <LogOut className="w-5 h-5" />

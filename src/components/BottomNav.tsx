@@ -1,9 +1,32 @@
 import { Home, Bell, Calendar, User } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
+import { useEffect, useState } from 'react'
+import { getUnreadNotifications } from '@/services/alerts'
+import { useRealtime } from '@/hooks/use-realtime'
+import { useAuth } from '@/hooks/use-auth'
 
 export function BottomNav() {
   const location = useLocation()
+  const { user } = useAuth()
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  const loadUnread = async () => {
+    if (!user) return
+    try {
+      const res = await getUnreadNotifications()
+      setUnreadCount(res.totalItems)
+    } catch {
+      /* intentionally ignored */
+    }
+  }
+
+  useEffect(() => {
+    loadUnread()
+  }, [user])
+  useRealtime('notifications', () => {
+    loadUnread()
+  })
 
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
@@ -27,7 +50,14 @@ export function BottomNav() {
                 : 'text-muted-foreground hover:text-foreground hover:scale-105',
             )}
           >
-            <item.icon className={cn('w-5 h-5', isActive && 'fill-secondary/10')} />
+            <div className="relative">
+              <item.icon className={cn('w-5 h-5', isActive && 'fill-secondary/10')} />
+              {item.label === 'Alertas' && unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-3 w-3 items-center justify-center rounded-full bg-destructive text-[8px] font-bold text-destructive-foreground">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </div>
             <span className="text-[10px] font-semibold">{item.label}</span>
           </Link>
         )

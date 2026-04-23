@@ -31,12 +31,10 @@ export default function WorkshopDashboard() {
           pb
             .collection('quotes')
             .getFullList<Quote>({ filter: 'status="open"', expand: 'vehicle' }),
-          pb
-            .collection('proposals')
-            .getFullList<Proposal>({
-              filter: `workshop="${ws.id}"`,
-              expand: 'quote,quote.vehicle',
-            }),
+          pb.collection('proposals').getFullList<Proposal>({
+            filter: `workshop="${ws.id}"`,
+            expand: 'quote,quote.vehicle',
+          }),
         ])
         setOpenQuotes(quotesRes)
         setProposals(propsRes)
