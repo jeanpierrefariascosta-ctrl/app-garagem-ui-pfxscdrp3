@@ -1,5 +1,6 @@
 import { Wrench, History } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
 
 export function ActionButtons() {
   return (
@@ -12,12 +13,15 @@ export function ActionButtons() {
         Solicitar Cotação
       </Button>
       <Button
+        asChild
         variant="outline"
         size="lg"
         className="w-full h-14 rounded-xl font-semibold border-2 hover:bg-muted/50 transition-transform active:scale-[0.98]"
       >
-        <History className="w-5 h-5 mr-2 text-muted-foreground" />
-        Ver Histórico
+        <Link to="/plano">
+          <History className="w-5 h-5 mr-2 text-muted-foreground" />
+          Ver Plano de Manutenção
+        </Link>
       </Button>
     </div>
   )

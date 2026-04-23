@@ -8,6 +8,7 @@ import Index from './pages/Index'
 import Alerts from './pages/Alerts'
 import Schedules from './pages/Schedules'
 import Profile from './pages/Profile'
+import MaintenancePlan from './pages/MaintenancePlan'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -32,6 +33,7 @@ const App = () => (
                 <Route path="/alertas" element={<Alerts />} />
                 <Route path="/agendamentos" element={<Schedules />} />
                 <Route path="/perfil" element={<Profile />} />
+                <Route path="/plano" element={<MaintenancePlan />} />
               </Route>
             </Route>
 

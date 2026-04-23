@@ -1,7 +1,9 @@
-import { Car, RefreshCw } from 'lucide-react'
+import { useState } from 'react'
+import { Car, RefreshCw, Pencil } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import type { RecordModel } from 'pocketbase'
+import { UpdateKmDialog } from '@/components/UpdateKmDialog'
 
 interface VehicleInfoProps {
   vehicle: RecordModel
@@ -9,6 +11,7 @@ interface VehicleInfoProps {
 }
 
 export function VehicleInfo({ vehicle, onChangeVehicle }: VehicleInfoProps) {
+  const [isUpdateKmOpen, setIsUpdateKmOpen] = useState(false)
   // Format KM with dots (e.g., 42000 -> 42.000)
   const formattedKm = Number(vehicle.km_current || 0).toLocaleString('pt-BR')
 
@@ -43,13 +46,25 @@ export function VehicleInfo({ vehicle, onChangeVehicle }: VehicleInfoProps) {
             <p className="text-xs text-muted-foreground uppercase font-semibold tracking-wider mb-1">
               Odômetro
             </p>
-            <div className="text-xl font-mono font-bold text-primary">
-              {formattedKm}{' '}
-              <span className="text-sm font-sans font-medium text-muted-foreground">km</span>
+            <div className="flex items-center justify-end gap-2">
+              <div className="text-xl font-mono font-bold text-primary">
+                {formattedKm}{' '}
+                <span className="text-sm font-sans font-medium text-muted-foreground">km</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary"
+                onClick={() => setIsUpdateKmOpen(true)}
+                title="Atualizar KM"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
             </div>
           </div>
         </div>
       </CardContent>
+      <UpdateKmDialog vehicle={vehicle} open={isUpdateKmOpen} onOpenChange={setIsUpdateKmOpen} />
     </Card>
   )
 }

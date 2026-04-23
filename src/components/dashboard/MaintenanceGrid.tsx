@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import type { RecordModel } from 'pocketbase'
-import { getVehicleMaintenanceStatus } from '@/services/maintenance'
+import { getVehicleMaintenanceStatus, calculateMaintenanceItemStatus } from '@/services/maintenance'
 import useVehicleStore from '@/stores/use-vehicle-store'
 import { useRealtime } from '@/hooks/use-realtime'
 
@@ -85,15 +85,22 @@ export function MaintenanceGrid() {
           const itemName = plan?.item_name || 'Desconhecido'
           const Icon = getIcon(itemName)
 
-          let statusType = 'success'
-          let message = 'Em dia'
+          const interval = plan?.interval_km || 0
+          const lastDone = item.last_done_km || 0
+          const { status, diff } = calculateMaintenanceItemStatus(
+            vehicle.km_current,
+            lastDone,
+            interval,
+          )
 
-          if (item.status === 'overdue') {
+          let statusType = 'success'
+          let message = `Próximo em ${diff.toLocaleString('pt-BR')} km`
+
+          if (status === 'overdue') {
             statusType = 'error'
-            message = 'Atrasado! Agende revisão.'
-          } else if (item.status === 'upcoming') {
+            message = `Atrasado em ${diff.toLocaleString('pt-BR')} km`
+          } else if (status === 'upcoming') {
             statusType = 'warning'
-            message = 'Próximo da troca'
           }
 
           return (
