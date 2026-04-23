@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-23T03:16:12.598Z",
+  "generatedAt": "2026-04-23T03:25:38.562Z",
   "collections": [
     {
       "name": "users",
@@ -645,6 +645,155 @@
         }
       ],
       "indexes": ["CREATE INDEX idx_notifications_user_sent ON notifications (user, sent_at DESC)"]
+    },
+    {
+      "name": "service_records",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != '' && vehicle.user = @request.auth.id",
+        "view": "@request.auth.id != '' && vehicle.user = @request.auth.id",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != '' && vehicle.user = @request.auth.id",
+        "delete": "@request.auth.id != '' && vehicle.user = @request.auth.id"
+      },
+      "fields": [
+        {
+          "name": "vehicle",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "vehicles"
+        },
+        {
+          "name": "workshop",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "workshops"
+        },
+        {
+          "name": "quote",
+          "type": "relation",
+          "required": false,
+          "system": false,
+          "collectionRef": "quotes"
+        },
+        {
+          "name": "service_date",
+          "type": "date",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "km_at_service",
+          "type": "number",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "items_done",
+          "type": "json",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "total_value",
+          "type": "number",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "nf_file",
+          "type": "file",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": [
+        "CREATE INDEX idx_service_records_vehicle ON service_records (vehicle)",
+        "CREATE INDEX idx_service_records_date ON service_records (service_date DESC)"
+      ]
+    },
+    {
+      "name": "reviews",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != '' && user = @request.auth.id",
+        "delete": "@request.auth.id != '' && user = @request.auth.id"
+      },
+      "fields": [
+        {
+          "name": "user",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "users"
+        },
+        {
+          "name": "workshop",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "workshops"
+        },
+        {
+          "name": "service_record",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "service_records"
+        },
+        {
+          "name": "rating",
+          "type": "number",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "comment",
+          "type": "text",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": ["CREATE INDEX idx_reviews_workshop ON reviews (workshop)"]
     }
   ]
 }

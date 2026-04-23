@@ -10,6 +10,8 @@ import Schedules from './pages/Schedules'
 import Profile from './pages/Profile'
 import AlertSettings from './pages/AlertSettings'
 import MaintenancePlan from './pages/MaintenancePlan'
+import ServiceHistory from './pages/ServiceHistory'
+import WorkshopProfile from './pages/WorkshopProfile'
 import QuoteRequest from './pages/QuoteRequest'
 import QuoteDashboard from './pages/QuoteDashboard'
 import Roadmap from './pages/Roadmap'
@@ -43,6 +45,8 @@ const App = () => (
                 <Route path="/perfil" element={<Profile />} />
                 <Route path="/perfil/alertas" element={<AlertSettings />} />
                 <Route path="/plano" element={<MaintenancePlan />} />
+                <Route path="/historico" element={<ServiceHistory />} />
+                <Route path="/oficina/:id" element={<WorkshopProfile />} />
                 <Route path="/cotacao" element={<QuoteRequest />} />
                 <Route path="/cotacao/:id" element={<QuoteDashboard />} />
                 <Route path="/roadmap" element={<Roadmap />} />
