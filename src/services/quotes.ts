@@ -19,6 +19,7 @@ export interface Quote {
 export interface Proposal {
   id: string
   quote: string
+  workshop?: string
   workshop_name: string
   total_value: number
   estimated_hours?: number
@@ -27,6 +28,9 @@ export interface Proposal {
   status: 'pending' | 'accepted' | 'rejected'
   created: string
   updated: string
+  expand?: {
+    quote?: Quote
+  }
 }
 
 export const createQuote = (data: Partial<Quote>) => pb.collection('quotes').create<Quote>(data)

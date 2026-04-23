@@ -15,6 +15,8 @@ import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { WorkshopRoute } from './components/WorkshopRoute'
+import WorkshopDashboard from './pages/WorkshopDashboard'
 import { VehicleProvider } from './stores/use-vehicle-store'
 import { AuthProvider } from './hooks/use-auth'
 
@@ -39,6 +41,10 @@ const App = () => (
                 <Route path="/cotacao" element={<QuoteRequest />} />
                 <Route path="/cotacao/:id" element={<QuoteDashboard />} />
               </Route>
+            </Route>
+
+            <Route element={<WorkshopRoute />}>
+              <Route path="/workshop" element={<WorkshopDashboard />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
