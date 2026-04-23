@@ -95,91 +95,102 @@ export function ProposalModal({ quote, workshopId, workshopName, open, onOpenCha
   const vehicleInfo = `Veículo: ${quote.expand?.vehicle?.brand} ${quote.expand?.vehicle?.model} (${quote.expand?.vehicle?.year})`
 
   const Content = (
-    <div className="space-y-6 py-2 px-4 md:px-0">
-          {history.length > 0 && (
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium flex items-center gap-2">
-                <Wrench className="w-4 h-4" /> Histórico Recente
-              </h4>
-              <ul className="text-sm space-y-1 text-muted-foreground bg-muted p-3 rounded-md">
-                {history.map((h) => (
-                  <li key={h.id}>
-                    • {h.expand?.plan_item?.item_name} -{' '}
-                    {h.status === 'ok' ? 'Realizado' : h.status}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+    <>
+      <div className="space-y-6 py-2 px-4 md:px-0">
+        {history.length > 0 && (
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium flex items-center gap-2">
+              <Wrench className="w-4 h-4" /> Histórico Recente
+            </h4>
+            <ul className="text-sm space-y-1 text-muted-foreground bg-muted p-3 rounded-md">
+              {history.map((h) => (
+                <li key={h.id}>
+                  • {h.expand?.plan_item?.item_name} - {h.status === 'ok' ? 'Realizado' : h.status}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-          <form id="proposal-form" onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="total">Valor Total (R$)</Label>
-                <Input
-                  id="total"
-                  type="number"
-                  step="0.01"
-                  required
-                  value={totalValue}
-                  onChange={(e) => setTotalValue(e.target.value)}
-                  placeholder="0.00"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="hours">Prazo (Horas)</Label>
-                <Input
-                  id="hours"
-                  type="number"
-                  required
-                  value={hours}
-                  onChange={(e) => setHours(e.target.value)}
-                  placeholder="Ex: 4"
-                />
-              </div>
-            </div>
-
+        <form id="proposal-form" onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Itens Inclusos</Label>
-              <div className="space-y-2 border p-3 rounded-md">
-                {quote.items_requested?.map((item) => (
-                  <div key={item} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`chk-${item}`}
-                      checked={selectedItems.includes(item)}
-                      onCheckedChange={(checked) => {
-                        if (checked) setSelectedItems([...selectedItems, item])
-                        else setSelectedItems(selectedItems.filter((i) => i !== item))
-                      }}
-                    />
-                    <label htmlFor={`chk-${item}`} className="text-sm leading-none cursor-pointer">
-                      {item}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Observações</Label>
-              <Textarea
-                id="notes"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Detalhes adicionais..."
+              <Label htmlFor="total">Valor Total (R$)</Label>
+              <Input
+                id="total"
+                type="number"
+                step="0.01"
+                required
+                value={totalValue}
+                onChange={(e) => setTotalValue(e.target.value)}
+                placeholder="0.00"
               />
             </div>
-          </form>
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="hours">Prazo (Horas)</Label>
+              <Input
+                id="hours"
+                type="number"
+                required
+                value={hours}
+                onChange={(e) => setHours(e.target.value)}
+                placeholder="Ex: 4"
+              />
+            </div>
+          </div>
 
-        <div className="flex flex-col md:flex-row justify-end gap-3 pt-4 border-t px-4 md:px-0 pb-4 md:pb-0">
-          <Button type="button" variant="ghost" className="order-2" onClick={() => onOpenChange(false)}>
-            Cancelar
-          </Button>
-          <Button type="submit" form="proposal-form" disabled={loading} className="order-1 md:order-2">
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Enviar Proposta
-          </Button>
-        </div>
+          <div className="space-y-2">
+            <Label>Itens Inclusos</Label>
+            <div className="space-y-2 border p-3 rounded-md">
+              {quote.items_requested?.map((item) => (
+                <div key={item} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`chk-${item}`}
+                    checked={selectedItems.includes(item)}
+                    onCheckedChange={(checked) => {
+                      if (checked) setSelectedItems([...selectedItems, item])
+                      else setSelectedItems(selectedItems.filter((i) => i !== item))
+                    }}
+                  />
+                  <label htmlFor={`chk-${item}`} className="text-sm leading-none cursor-pointer">
+                    {item}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="notes">Observações</Label>
+            <Textarea
+              id="notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Detalhes adicionais..."
+            />
+          </div>
+        </form>
+      </div>
+
+      <div className="flex flex-col md:flex-row justify-end gap-3 pt-4 border-t px-4 md:px-0 pb-4 md:pb-0">
+        <Button
+          type="button"
+          variant="ghost"
+          className="order-2"
+          onClick={() => onOpenChange(false)}
+        >
+          Cancelar
+        </Button>
+        <Button
+          type="submit"
+          form="proposal-form"
+          disabled={loading}
+          className="order-1 md:order-2"
+        >
+          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Enviar Proposta
+        </Button>
+      </div>
+    </>
   )
 
   if (isMobile) {
@@ -190,9 +201,7 @@ export function ProposalModal({ quote, workshopId, workshopName, open, onOpenCha
             <DrawerTitle>Enviar Proposta</DrawerTitle>
             <DrawerDesc>{vehicleInfo}</DrawerDesc>
           </DrawerHeader>
-          <div className="overflow-y-auto">
-            {Content}
-          </div>
+          <div className="overflow-y-auto">{Content}</div>
         </DrawerContent>
       </Drawer>
     )
