@@ -4,7 +4,7 @@ import { MapPin, Star, Clock, Info, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
-import { useVehicleStore } from '@/stores/use-vehicle-store'
+import useVehicleStore from '@/stores/use-vehicle-store'
 import { useAuth } from '@/hooks/use-auth'
 import { createQuote } from '@/services/quotes'
 import { useToast } from '@/hooks/use-toast'
@@ -28,7 +28,7 @@ const SERVICES = [
 export default function QuoteRequest() {
   const navigate = useNavigate()
   const { toast } = useToast()
-  const { activeVehicle } = useVehicleStore()
+  const { vehicle } = useVehicleStore()
   const { user } = useAuth()
 
   const [selectedServices, setSelectedServices] = useState<string[]>(['Filtro de ar'])
@@ -41,7 +41,7 @@ export default function QuoteRequest() {
   }
 
   const handleRequestQuote = async () => {
-    if (!activeVehicle || !user) {
+    if (!vehicle || !user) {
       toast({
         title: 'Erro',
         description: 'Selecione um veículo primeiro.',
@@ -65,7 +65,7 @@ export default function QuoteRequest() {
 
       const quote = await createQuote({
         user: user.id,
-        vehicle: activeVehicle.id,
+        vehicle: vehicle.id,
         items_requested: selectedServices,
         status: 'open',
         expires_at: expiresAt.toISOString(),
@@ -89,9 +89,9 @@ export default function QuoteRequest() {
     <div className="container max-w-4xl py-6 space-y-8 animate-fade-in-up">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Solicitar Cotação</h1>
-        {activeVehicle && (
+        {vehicle && (
           <p className="text-muted-foreground mt-1 text-lg">
-            {activeVehicle.brand} {activeVehicle.model} {activeVehicle.year}
+            {vehicle.brand} {vehicle.model} {vehicle.year}
           </p>
         )}
       </div>
