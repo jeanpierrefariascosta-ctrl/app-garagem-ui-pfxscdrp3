@@ -1,12 +1,39 @@
-/* Home Page - Replace this page layout, components, content, behavior with what you want and translate to the language of the user */
-const Index = () => {
+import { useState } from 'react'
+import useVehicleStore from '@/stores/use-vehicle-store'
+import { Header } from '@/components/dashboard/Header'
+import { EmptyState } from '@/components/dashboard/EmptyState'
+import { VehicleInfo } from '@/components/dashboard/VehicleInfo'
+import { MaintenanceGrid } from '@/components/dashboard/MaintenanceGrid'
+import { ActionButtons } from '@/components/dashboard/ActionButtons'
+import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton'
+import { VehicleRegistrationDrawer } from '@/components/VehicleRegistrationDrawer'
+
+export default function Index() {
+  const { vehicle, isLoading } = useVehicleStore()
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+  if (isLoading) {
+    return <DashboardSkeleton />
+  }
+
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-6">
-        This is a example page ready to be rewritten with your own content
-      </h1>
+    <div className="flex flex-col min-h-full pb-8">
+      <Header />
+
+      {/* Content pulled up slightly over the header background */}
+      <div className="p-5 space-y-7 -mt-4 relative z-10">
+        {!vehicle ? (
+          <EmptyState onRegister={() => setIsDrawerOpen(true)} />
+        ) : (
+          <>
+            <VehicleInfo vehicle={vehicle} onChangeVehicle={() => setIsDrawerOpen(true)} />
+            <MaintenanceGrid />
+            <ActionButtons />
+          </>
+        )}
+      </div>
+
+      <VehicleRegistrationDrawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen} />
     </div>
   )
 }
-
-export default Index
