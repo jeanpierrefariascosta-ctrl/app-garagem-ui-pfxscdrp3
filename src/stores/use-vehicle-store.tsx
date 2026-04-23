@@ -69,3 +69,5 @@ export function useVehicleStore() {
   }
   return context
 }
+
+export default useVehicleStore
