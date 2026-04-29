@@ -15,6 +15,7 @@ import WorkshopProfile from './pages/WorkshopProfile'
 import QuoteRequest from './pages/QuoteRequest'
 import QuoteDashboard from './pages/QuoteDashboard'
 import Roadmap from './pages/Roadmap'
+import Vehicles from './pages/Vehicles'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -50,6 +51,7 @@ const App = () => (
                 <Route path="/cotacao" element={<QuoteRequest />} />
                 <Route path="/cotacao/:id" element={<QuoteDashboard />} />
                 <Route path="/roadmap" element={<Roadmap />} />
+                <Route path="/veiculos" element={<Vehicles />} />
               </Route>
             </Route>
 

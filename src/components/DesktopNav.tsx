@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Home, Bell, Calendar, User, Map, Wrench } from 'lucide-react'
+import { Home, Bell, Calendar, User, Map, Wrench, Car } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/use-auth'
 import { useEffect, useState } from 'react'
@@ -30,6 +30,7 @@ export function DesktopNav() {
 
   const navItems = [
     { icon: Home, label: 'Dashboard', path: '/' },
+    { icon: Car, label: 'Meus Veículos', path: '/veiculos' },
     { icon: Bell, label: 'Alertas', path: '/alertas' },
     { icon: Calendar, label: 'Agendamentos', path: '/agendamentos' },
     { icon: Map, label: 'Roadmap', path: '/roadmap' },

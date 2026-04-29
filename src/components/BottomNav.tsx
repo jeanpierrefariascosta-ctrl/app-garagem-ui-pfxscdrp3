@@ -1,4 +1,4 @@
-import { Home, Bell, Calendar, User, Map } from 'lucide-react'
+import { Home, Bell, Calendar, User, Map, Car } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
@@ -30,6 +30,7 @@ export function BottomNav() {
 
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
+    { icon: Car, label: 'Veículos', path: '/veiculos' },
     { icon: Bell, label: 'Alertas', path: '/alertas' },
     { icon: Calendar, label: 'Agendamentos', path: '/agendamentos' },
     { icon: Map, label: 'Roadmap', path: '/roadmap' },

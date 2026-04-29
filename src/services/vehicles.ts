@@ -7,6 +7,8 @@ export type VehicleCreateData = {
   year: number
   km_current: number
   user: string
+  plate?: string
+  color?: string
 }
 
 export const getMyVehicles = async (): Promise<RecordModel[]> => {
@@ -19,4 +21,15 @@ export const getMyVehicles = async (): Promise<RecordModel[]> => {
 
 export const createVehicle = async (data: VehicleCreateData): Promise<RecordModel> => {
   return pb.collection('vehicles').create(data)
+}
+
+export const updateVehicle = async (
+  id: string,
+  data: Partial<VehicleCreateData>,
+): Promise<RecordModel> => {
+  return pb.collection('vehicles').update(id, data)
+}
+
+export const deleteVehicle = async (id: string): Promise<void> => {
+  return pb.collection('vehicles').delete(id)
 }

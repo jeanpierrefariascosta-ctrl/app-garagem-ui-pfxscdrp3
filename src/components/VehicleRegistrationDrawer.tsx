@@ -5,7 +5,6 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
-  DrawerFooter,
   DrawerClose,
 } from '@/components/ui/drawer'
 import {
@@ -27,7 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useToast } from '@/hooks/use-toast'
-import useVehicleStore from '@/stores/use-vehicle-store'
+import { useVehicleStore } from '@/stores/use-vehicle-store'
 import pb from '@/lib/pocketbase/client'
 import { createVehicle } from '@/services/vehicles'
 import { initVehicleMaintenance } from '@/services/maintenance'
@@ -45,7 +44,7 @@ const CAR_DATA: Record<string, string[]> = {
   Honda: ['Civic', 'HR-V', 'City'],
 }
 
-const YEARS = Array.from({ length: 12 }, (_, i) => (2026 - i).toString())
+const YEARS = Array.from({ length: 25 }, (_, i) => (new Date().getFullYear() - i).toString())
 
 interface Props {
   open: boolean
@@ -62,6 +61,8 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
   const [model, setModel] = useState('')
   const [year, setYear] = useState('')
   const [km, setKm] = useState('')
+  const [plate, setPlate] = useState('')
+  const [color, setColor] = useState('')
 
   useEffect(() => {
     setModel('')
@@ -73,6 +74,8 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
       setModel('')
       setYear('')
       setKm('')
+      setPlate('')
+      setColor('')
     }
   }, [open])
 
@@ -87,12 +90,12 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
         model,
         year: parseInt(year),
         km_current: parseInt(km),
+        plate: plate || undefined,
+        color: color || undefined,
         user: pb.authStore.record.id,
       })
 
-      // Initialize basic plans for this vehicle
       await initVehicleMaintenance(newVehicle.id, model)
-
       await refreshVehicles()
 
       toast({
@@ -115,53 +118,53 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
   const isFormValid = brand && model && year && km && !isLoading
 
   const FormContent = (
-    <form onSubmit={handleSubmit} className="p-4 md:p-2 space-y-5">
-      <div className="space-y-2">
-        <Label htmlFor="brand" className="font-semibold text-foreground">
-          Marca
-        </Label>
-        <Select value={brand} onValueChange={setBrand}>
-          <SelectTrigger id="brand" className="h-12 rounded-xl border-input/60">
-            <SelectValue placeholder="Selecione a marca" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.keys(CAR_DATA)
-              .sort()
-              .map((b) => (
-                <SelectItem key={b} value={b}>
-                  {b}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
-      </div>
+    <form onSubmit={handleSubmit} className="p-4 md:p-2 space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="brand" className="font-semibold text-foreground">
+            Marca *
+          </Label>
+          <Select value={brand} onValueChange={setBrand}>
+            <SelectTrigger id="brand" className="h-11 rounded-xl border-input/60">
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.keys(CAR_DATA)
+                .sort()
+                .map((b) => (
+                  <SelectItem key={b} value={b}>
+                    {b}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="model" className="font-semibold text-foreground">
-          Modelo
-        </Label>
-        <Select value={model} onValueChange={setModel} disabled={!brand}>
-          <SelectTrigger id="model" className="h-12 rounded-xl border-input/60">
-            <SelectValue placeholder="Selecione o modelo" />
-          </SelectTrigger>
-          <SelectContent>
-            {brand &&
-              CAR_DATA[brand]?.sort().map((m) => (
-                <SelectItem key={m} value={m}>
-                  {m}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
-      </div>
+        <div className="space-y-2">
+          <Label htmlFor="model" className="font-semibold text-foreground">
+            Modelo *
+          </Label>
+          <Select value={model} onValueChange={setModel} disabled={!brand}>
+            <SelectTrigger id="model" className="h-11 rounded-xl border-input/60">
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent>
+              {brand &&
+                CAR_DATA[brand]?.sort().map((m) => (
+                  <SelectItem key={m} value={m}>
+                    {m}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="year" className="font-semibold text-foreground">
-            Ano
+            Ano *
           </Label>
           <Select value={year} onValueChange={setYear}>
-            <SelectTrigger id="year" className="h-12 rounded-xl border-input/60">
+            <SelectTrigger id="year" className="h-11 rounded-xl border-input/60">
               <SelectValue placeholder="Ano" />
             </SelectTrigger>
             <SelectContent>
@@ -176,7 +179,7 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
 
         <div className="space-y-2">
           <Label htmlFor="km" className="font-semibold text-foreground">
-            KM atual
+            KM atual *
           </Label>
           <Input
             id="km"
@@ -185,12 +188,39 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
             placeholder="Ex: 45000"
             value={km}
             onChange={(e) => setKm(e.target.value)}
-            className="h-12 rounded-xl border-input/60"
+            className="h-11 rounded-xl border-input/60"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="plate" className="font-semibold text-foreground">
+            Placa <span className="text-muted-foreground font-normal">(Opcional)</span>
+          </Label>
+          <Input
+            id="plate"
+            placeholder="ABC-1234"
+            value={plate}
+            onChange={(e) => setPlate(e.target.value)}
+            className="h-11 rounded-xl border-input/60 uppercase"
+            maxLength={8}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="color" className="font-semibold text-foreground">
+            Cor <span className="text-muted-foreground font-normal">(Opcional)</span>
+          </Label>
+          <Input
+            id="color"
+            placeholder="Ex: Prata"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+            className="h-11 rounded-xl border-input/60 capitalize"
           />
         </div>
       </div>
 
-      <div className="pt-6 pb-2 flex flex-col md:flex-row md:justify-end gap-3">
+      <div className="pt-4 flex flex-col md:flex-row md:justify-end gap-3">
         {isMobile ? (
           <DrawerClose asChild>
             <Button
@@ -212,7 +242,6 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
             Cancelar
           </Button>
         )}
-
         <Button
           type="submit"
           size="lg"
@@ -220,7 +249,7 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
           className="w-full md:w-auto h-14 md:h-10 rounded-xl font-bold text-base md:text-sm transition-transform active:scale-[0.98] order-1 md:order-2"
         >
           {isLoading && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
-          Confirmar Cadastro
+          Confirmar
         </Button>
       </div>
     </form>
@@ -244,8 +273,8 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] p-6 bg-background rounded-2xl">
-        <DialogHeader className="text-left pb-4">
+      <DialogContent className="sm:max-w-[600px] p-6 bg-background rounded-2xl">
+        <DialogHeader className="text-left pb-2">
           <DialogTitle className="text-2xl font-bold text-primary">Cadastrar Veículo</DialogTitle>
           <DialogDesc>Insira os dados do seu carro para acompanhar a manutenção.</DialogDesc>
         </DialogHeader>
