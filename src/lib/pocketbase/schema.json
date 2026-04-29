@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-23T03:25:38.562Z",
+  "generatedAt": "2026-04-23T03:29:52.463Z",
   "collections": [
     {
       "name": "users",
@@ -29,14 +29,19 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         },
         {
           "name": "phone",
@@ -49,7 +54,11 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["user", "workshop", "admin"]
+          "selectValues": [
+            "user",
+            "workshop",
+            "admin"
+          ]
         }
       ],
       "indexes": [
@@ -122,17 +131,24 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         }
       ],
-      "indexes": ["CREATE INDEX idx_vehicles_user ON vehicles (user)"]
+      "indexes": [
+        "CREATE INDEX idx_vehicles_user ON vehicles (user)"
+      ]
     },
     {
       "name": "maintenance_plans",
@@ -192,24 +208,35 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["critical", "high", "medium"]
+          "selectValues": [
+            "critical",
+            "high",
+            "medium"
+          ]
         },
         {
           "name": "created",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         }
       ],
-      "indexes": ["CREATE INDEX idx_maint_plans_model ON maintenance_plans (model)"]
+      "indexes": [
+        "CREATE INDEX idx_maint_plans_model ON maintenance_plans (model)"
+      ]
     },
     {
       "name": "vehicle_maintenance_status",
@@ -253,24 +280,35 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["ok", "upcoming", "overdue"]
+          "selectValues": [
+            "ok",
+            "upcoming",
+            "overdue"
+          ]
         },
         {
           "name": "created",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         }
       ],
-      "indexes": ["CREATE INDEX idx_vms_vehicle ON vehicle_maintenance_status (vehicle)"]
+      "indexes": [
+        "CREATE INDEX idx_vms_vehicle ON vehicle_maintenance_status (vehicle)"
+      ]
     },
     {
       "name": "quotes",
@@ -308,7 +346,12 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["open", "in_progress", "completed", "expired"]
+          "selectValues": [
+            "open",
+            "in_progress",
+            "completed",
+            "expired"
+          ]
         },
         {
           "name": "expires_at",
@@ -333,14 +376,19 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         }
       ],
       "indexes": []
@@ -398,21 +446,30 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["pending", "accepted", "rejected"]
+          "selectValues": [
+            "pending",
+            "accepted",
+            "rejected"
+          ]
         },
         {
           "name": "created",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         },
         {
           "name": "workshop",
@@ -501,14 +558,19 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         }
       ],
       "indexes": []
@@ -542,7 +604,11 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["300", "500", "1000"]
+          "selectValues": [
+            "300",
+            "500",
+            "1000"
+          ]
         },
         {
           "name": "item_preferences",
@@ -555,17 +621,24 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         }
       ],
-      "indexes": ["CREATE UNIQUE INDEX idx_user_alert_settings_user ON user_alert_settings (user)"]
+      "indexes": [
+        "CREATE UNIQUE INDEX idx_user_alert_settings_user ON user_alert_settings (user)"
+      ]
     },
     {
       "name": "notifications",
@@ -590,7 +663,9 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["maintenance_alert"]
+          "selectValues": [
+            "maintenance_alert"
+          ]
         },
         {
           "name": "title",
@@ -615,7 +690,11 @@
           "type": "select",
           "required": false,
           "system": false,
-          "selectValues": ["none", "action_taken", "ignored"]
+          "selectValues": [
+            "none",
+            "action_taken",
+            "ignored"
+          ]
         },
         {
           "name": "read_at",
@@ -634,17 +713,24 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         }
       ],
-      "indexes": ["CREATE INDEX idx_notifications_user_sent ON notifications (user, sent_at DESC)"]
+      "indexes": [
+        "CREATE INDEX idx_notifications_user_sent ON notifications (user, sent_at DESC)"
+      ]
     },
     {
       "name": "service_records",
@@ -719,14 +805,19 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         }
       ],
       "indexes": [
@@ -783,17 +874,24 @@
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate"]
+          "autodateTriggers": [
+            "onCreate"
+          ]
         },
         {
           "name": "updated",
           "type": "autodate",
           "required": false,
           "system": false,
-          "autodateTriggers": ["onCreate", "onUpdate"]
+          "autodateTriggers": [
+            "onCreate",
+            "onUpdate"
+          ]
         }
       ],
-      "indexes": ["CREATE INDEX idx_reviews_workshop ON reviews (workshop)"]
+      "indexes": [
+        "CREATE INDEX idx_reviews_workshop ON reviews (workshop)"
+      ]
     }
   ]
 }
