@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-29T00:44:18.114Z",
+  "generatedAt": "2026-04-29T01:26:31.682Z",
   "collections": [
     {
       "name": "users",
@@ -130,6 +130,12 @@
           "required": false,
           "system": false,
           "autodateTriggers": ["onCreate", "onUpdate"]
+        },
+        {
+          "name": "photo",
+          "type": "file",
+          "required": false,
+          "system": false
         }
       ],
       "indexes": ["CREATE INDEX idx_vehicles_user ON vehicles (user)"]
@@ -794,6 +800,47 @@
         }
       ],
       "indexes": ["CREATE INDEX idx_reviews_workshop ON reviews (workshop)"]
+    },
+    {
+      "name": "pre_travel_checklists",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != '' && vehicle.user = @request.auth.id",
+        "view": "@request.auth.id != '' && vehicle.user = @request.auth.id",
+        "create": "@request.auth.id != ''",
+        "update": "@request.auth.id != '' && vehicle.user = @request.auth.id",
+        "delete": "@request.auth.id != '' && vehicle.user = @request.auth.id"
+      },
+      "fields": [
+        {
+          "name": "vehicle",
+          "type": "relation",
+          "required": true,
+          "system": false,
+          "collectionRef": "vehicles"
+        },
+        {
+          "name": "items",
+          "type": "json",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": ["CREATE INDEX idx_checklists_vehicle ON pre_travel_checklists (vehicle)"]
     }
   ]
 }

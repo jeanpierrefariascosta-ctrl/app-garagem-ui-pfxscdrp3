@@ -9,6 +9,7 @@ export type VehicleCreateData = {
   user: string
   plate?: string
   color?: string
+  photo?: File
 }
 
 export const getMyVehicles = async (): Promise<RecordModel[]> => {
@@ -20,14 +21,30 @@ export const getMyVehicles = async (): Promise<RecordModel[]> => {
 }
 
 export const createVehicle = async (data: VehicleCreateData): Promise<RecordModel> => {
-  return pb.collection('vehicles').create(data)
+  const formData = new FormData()
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined) {
+      formData.append(key, value as any)
+    }
+  })
+  return pb.collection('vehicles').create(formData)
 }
 
 export const updateVehicle = async (
   id: string,
   data: Partial<VehicleCreateData>,
 ): Promise<RecordModel> => {
-  return pb.collection('vehicles').update(id, data)
+  const formData = new FormData()
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined) {
+      if (value === null) {
+        formData.append(key, '')
+      } else {
+        formData.append(key, value as any)
+      }
+    }
+  })
+  return pb.collection('vehicles').update(id, formData)
 }
 
 export const deleteVehicle = async (id: string): Promise<void> => {

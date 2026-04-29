@@ -28,9 +28,10 @@ import {
 import { useToast } from '@/hooks/use-toast'
 import { useVehicleStore } from '@/stores/use-vehicle-store'
 import pb from '@/lib/pocketbase/client'
-import { createVehicle } from '@/services/vehicles'
+import { createVehicle, updateVehicle } from '@/services/vehicles'
 import { initVehicleMaintenance } from '@/services/maintenance'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Camera } from 'lucide-react'
+import type { RecordModel } from 'pocketbase'
 
 const CAR_DATA: Record<string, string[]> = {
   Chevrolet: ['Onix', 'Tracker', 'Montana', 'Cruze'],
@@ -49,9 +50,10 @@ const YEARS = Array.from({ length: 25 }, (_, i) => (new Date().getFullYear() - i
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
+  vehicleToEdit?: RecordModel | null
 }
 
-export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
+export function VehicleRegistrationDrawer({ open, onOpenChange, vehicleToEdit }: Props) {
   const isMobile = useIsMobile()
   const { refreshVehicles } = useVehicleStore()
   const { toast } = useToast()
@@ -63,21 +65,40 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
   const [km, setKm] = useState('')
   const [plate, setPlate] = useState('')
   const [color, setColor] = useState('')
+  const [photo, setPhoto] = useState<File | null>(null)
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null)
 
   useEffect(() => {
-    setModel('')
-  }, [brand])
+    if (!vehicleToEdit) {
+      setModel('')
+    }
+  }, [brand, vehicleToEdit])
 
   useEffect(() => {
     if (open) {
-      setBrand('')
-      setModel('')
-      setYear('')
-      setKm('')
-      setPlate('')
-      setColor('')
+      if (vehicleToEdit) {
+        setBrand(vehicleToEdit.brand)
+        setModel(vehicleToEdit.model)
+        setYear(vehicleToEdit.year.toString())
+        setKm(vehicleToEdit.km_current.toString())
+        setPlate(vehicleToEdit.plate || '')
+        setColor(vehicleToEdit.color || '')
+        setPhoto(null)
+        setPhotoPreview(
+          vehicleToEdit.photo ? pb.files.getUrl(vehicleToEdit, vehicleToEdit.photo) : null,
+        )
+      } else {
+        setBrand('')
+        setModel('')
+        setYear('')
+        setKm('')
+        setPlate('')
+        setColor('')
+        setPhoto(null)
+        setPhotoPreview(null)
+      }
     }
-  }, [open])
+  }, [open, vehicleToEdit])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -85,7 +106,7 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
 
     setIsLoading(true)
     try {
-      const newVehicle = await createVehicle({
+      const vehicleData = {
         brand,
         model,
         year: parseInt(year),
@@ -93,21 +114,32 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
         plate: plate || undefined,
         color: color || undefined,
         user: pb.authStore.record.id,
-      })
+        ...(photo && { photo }),
+      }
 
-      await initVehicleMaintenance(newVehicle.id, model)
+      if (vehicleToEdit) {
+        await updateVehicle(vehicleToEdit.id, vehicleData)
+        toast({
+          title: 'Veículo atualizado!',
+          description: `Os dados do ${brand} ${model} foram salvos com sucesso.`,
+          className: 'bg-success text-success-foreground border-success',
+        })
+      } else {
+        const newVehicle = await createVehicle(vehicleData)
+        await initVehicleMaintenance(newVehicle.id, model)
+        toast({
+          title: 'Veículo cadastrado!',
+          description: `${brand} ${model} adicionado com sucesso à sua garagem.`,
+          className: 'bg-success text-success-foreground border-success',
+        })
+      }
+
       await refreshVehicles()
-
-      toast({
-        title: 'Veículo cadastrado!',
-        description: `${brand} ${model} adicionado com sucesso à sua garagem.`,
-        className: 'bg-success text-success-foreground border-success',
-      })
       onOpenChange(false)
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Erro ao cadastrar',
+        title: vehicleToEdit ? 'Erro ao atualizar' : 'Erro ao cadastrar',
         description: 'Verifique os dados e tente novamente.',
       })
     } finally {
@@ -120,6 +152,34 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
   const FormContent = (
     <form onSubmit={handleSubmit} className="p-4 md:p-2 space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="col-span-1 md:col-span-2 space-y-2 mt-2">
+          <Label className="font-semibold text-foreground">Foto do Veículo</Label>
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-xl bg-muted border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden shrink-0">
+              {photoPreview ? (
+                <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+              ) : (
+                <Camera className="w-6 h-6 text-muted-foreground/50" />
+              )}
+            </div>
+            <div className="flex-1">
+              <Input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    setPhoto(file)
+                    setPhotoPreview(URL.createObjectURL(file))
+                  }
+                }}
+                className="text-sm cursor-pointer file:cursor-pointer file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 h-auto py-2"
+              />
+              <p className="text-xs text-muted-foreground mt-1.5">Max: 5MB</p>
+            </div>
+          </div>
+        </div>
+
         <div className="space-y-2">
           <Label htmlFor="brand" className="font-semibold text-foreground">
             Marca *
@@ -249,7 +309,7 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
           className="w-full md:w-auto h-14 md:h-10 rounded-xl font-bold text-base md:text-sm transition-transform active:scale-[0.98] order-1 md:order-2"
         >
           {isLoading && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
-          Confirmar
+          {vehicleToEdit ? 'Salvar Alterações' : 'Confirmar'}
         </Button>
       </div>
     </form>
@@ -260,12 +320,16 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
       <Drawer open={open} onOpenChange={onOpenChange}>
         <DrawerContent className="max-w-[450px] mx-auto bg-background">
           <DrawerHeader className="text-left pb-2">
-            <DrawerTitle className="text-2xl font-bold text-primary">Cadastrar Veículo</DrawerTitle>
+            <DrawerTitle className="text-2xl font-bold text-primary">
+              {vehicleToEdit ? 'Editar Veículo' : 'Cadastrar Veículo'}
+            </DrawerTitle>
             <DrawerDescription>
-              Insira os dados do seu carro para acompanhar a manutenção.
+              {vehicleToEdit
+                ? 'Atualize os dados do seu carro.'
+                : 'Insira os dados do seu carro para acompanhar a manutenção.'}
             </DrawerDescription>
           </DrawerHeader>
-          {FormContent}
+          <div className="overflow-y-auto max-h-[80vh] px-2 pb-6">{FormContent}</div>
         </DrawerContent>
       </Drawer>
     )
@@ -275,8 +339,14 @@ export function VehicleRegistrationDrawer({ open, onOpenChange }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] p-6 bg-background rounded-2xl">
         <DialogHeader className="text-left pb-2">
-          <DialogTitle className="text-2xl font-bold text-primary">Cadastrar Veículo</DialogTitle>
-          <DialogDesc>Insira os dados do seu carro para acompanhar a manutenção.</DialogDesc>
+          <DialogTitle className="text-2xl font-bold text-primary">
+            {vehicleToEdit ? 'Editar Veículo' : 'Cadastrar Veículo'}
+          </DialogTitle>
+          <DialogDesc>
+            {vehicleToEdit
+              ? 'Atualize os dados do seu carro.'
+              : 'Insira os dados do seu carro para acompanhar a manutenção.'}
+          </DialogDesc>
         </DialogHeader>
         {FormContent}
       </DialogContent>
